@@ -1,15 +1,16 @@
-/* app.js */
+/* app.js (v2) */
 
 (function () {
   const $ = (sel) => document.querySelector(sel);
 
   const startBtn = $("#startBtn");
-  const surpriseBtn = $("#surpriseBtn");
   const nameInput = $("#nameInput");
-  const agreeInput = $("#agreeInput");
+
   const howBtn = $("#howBtn");
   const howDialog = $("#howDialog");
   const closeHowBtn = $("#closeHowBtn");
+
+  const readyToast = $("#readyToast");
 
   const cardRow = $("#cardRow");
   const readingList = $("#readingList");
@@ -46,7 +47,6 @@
     return a;
   }
 
-  // ---------- identity + daily key ----------
   function getDeviceId() {
     const key = "tarot_device_id";
     let v = localStorage.getItem(key);
@@ -57,7 +57,6 @@
     return v;
   }
   function todayKey() {
-    // local date
     const d = new Date();
     const yyyy = d.getFullYear();
     const mm = String(d.getMonth() + 1).padStart(2, "0");
@@ -65,63 +64,35 @@
     return `${yyyy}-${mm}-${dd}`;
   }
 
-  // ---------- state ----------
-  let currentDraw = null; // { picked: [{card,upright,position}], day, ... }
+  let currentDraw = null;
   let revealed = [false, false, false];
 
   const POSITIONS = [
-    { label: "Theme", help: "What energy is around you today" },
-    { label: "Gentle Advice", help: "The kind next step" },
-    { label: "Outcome", help: "Where this can lead (with your intention)" },
+    { label: "Theme" },
+    { label: "Gentle Advice" },
+    { label: "Outcome" },
   ];
 
   function setStage(stage) {
     document.body.className = `stage-${stage}`;
   }
 
-  function ensureAgreed() {
-    if (!agreeInput.checked) {
-      agreeInput.focus();
-      alert("Please tick the checkbox to continue (inspiration & entertainment).");
-      return false;
-    }
-    return true;
-  }
-
-  // ---------- draw logic ----------
-  function makeDraw({ dailySeeded }) {
+  function makeDailyDraw() {
     const name = (nameInput.value || "").trim();
     const deviceId = getDeviceId();
     const day = todayKey();
-
-    // Daily seeded = same result all day for this person.
-    // Surprise = new each time.
-    const seedStr = dailySeeded
-      ? `daily|${day}|${name.toLowerCase()}|${deviceId}`
-      : `surprise|${Date.now()}|${Math.random()}|${name.toLowerCase()}|${deviceId}`;
+    const seedStr = `daily|${day}|${name.toLowerCase()}|${deviceId}`;
 
     const rng = mulberry32(xfnv1a(seedStr));
     const pool = shuffledCopy(deck, rng);
 
     const picked = pool.slice(0, 3).map((card, idx) => {
-      const upright = rng() > 0.3; // 70% upright, gentle
+      const upright = rng() > 0.3; // gentle skew to upright
       return { card, upright, position: POSITIONS[idx] };
     });
 
-    const payload = {
-      day,
-      dailySeeded,
-      name,
-      seedStr,
-      picked,
-      createdAt: Date.now(),
-    };
-
-    // cache daily
-    if (dailySeeded) {
-      localStorage.setItem(`tarot_daily_${day}`, JSON.stringify(payload));
-    }
-
+    const payload = { day, name, seedStr, picked, createdAt: Date.now() };
+    localStorage.setItem(`tarot_daily_${day}`, JSON.stringify(payload));
     return payload;
   }
 
@@ -131,10 +102,9 @@
     if (cached) {
       try { return JSON.parse(cached); } catch {}
     }
-    return makeDraw({ dailySeeded: true });
+    return makeDailyDraw();
   }
 
-  // ---------- UI: cards ----------
   function renderFaceDownCards() {
     cardRow.innerHTML = "";
     readingList.innerHTML = "";
@@ -173,14 +143,10 @@
   function setFrontImage(btn, pick) {
     const img = btn.querySelector(".front-img");
     const title = btn.querySelector(".fallback-title");
-
     title.textContent = pick.card.name;
 
-    // try load image; fallback stays visible if image fails
     img.src = pick.card.image || "";
-    img.onerror = () => {
-      img.style.display = "none";
-    };
+    img.onerror = () => { img.style.display = "none"; };
     img.onload = () => {
       img.style.display = "block";
       const fb = btn.querySelector(".card-front-fallback");
@@ -189,8 +155,14 @@
   }
 
   function positionLine(idx) {
-    const p = POSITIONS[idx];
-    return `${idx + 1}. ${p.label}`;
+    return `${idx + 1}. ${POSITIONS[idx].label}`;
+  }
+
+  function showReadyToast() {
+    readyToast.hidden = false;
+  }
+  function hideReadyToast() {
+    readyToast.hidden = true;
   }
 
   function revealCard(idx, btn) {
@@ -216,28 +188,33 @@
       <div class="meta">${orientation} • ${(pick.card.keywords || []).slice(0,4).join(" · ")}</div>
       <p>${escapeHtml(msg)}</p>
     `;
-
     readingList.appendChild(item);
 
     if (revealed.every(Boolean)) {
       showSummary();
-      setStage("reading");
+      showReadyToast();
+
+      // Wait 2 seconds, then show reading page
+      window.setTimeout(() => {
+        hideReadyToast();
+        setStage("reading");
+      }, 2000);
     }
   }
 
   function showSummary() {
     const [a, b, c] = currentDraw.picked;
 
-    const theme = (a.upright ? a.card.lightUpright : a.card.lightReversed);
-    const advice = (b.upright ? b.card.lightUpright : b.card.lightReversed);
-    const outcome = (c.upright ? c.card.lightUpright : c.card.lightReversed);
+    const theme = a.upright ? a.card.lightUpright : a.card.lightReversed;
+    const advice = b.upright ? b.card.lightUpright : b.card.lightReversed;
+    const outcome = c.upright ? c.card.lightUpright : c.card.lightReversed;
 
     const name = (currentDraw.name || "").trim();
     const hello = name
       ? `<p><strong>${escapeHtml(name)}</strong>, here’s your gentle storyline for today:</p>`
       : `<p><strong>Here’s your gentle storyline for today:</strong></p>`;
 
-    const combined = `
+    summaryText.innerHTML = `
       ${hello}
       <p><strong>Theme:</strong> ${escapeHtml(shorten(theme))}</p>
       <p><strong>Gentle advice:</strong> ${escapeHtml(shorten(advice))}</p>
@@ -245,7 +222,6 @@
       <p class="tiny">Tiny intention: pick <strong>one</strong> kind action that matches your Theme, and do it within the next 24 hours.</p>
     `;
 
-    summaryText.innerHTML = combined;
     summaryBox.hidden = false;
   }
 
@@ -261,13 +237,16 @@
     }[c]));
   }
 
-  // ---------- flow ----------
-  function startFlow({ dailySeeded }) {
-    if (!ensureAgreed()) return;
+  function stripHtml(html) {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return (div.textContent || div.innerText || "").trim();
+  }
 
+  // Flow
+  function startFlow() {
     setStage("shuffle");
-
-    currentDraw = dailySeeded ? getOrCreateDailyDraw() : makeDraw({ dailySeeded: false });
+    currentDraw = getOrCreateDailyDraw();
 
     window.setTimeout(() => {
       setStage("draw");
@@ -275,15 +254,12 @@
     }, 2400);
   }
 
-  // ---------- actions ----------
-  startBtn.addEventListener("click", () => startFlow({ dailySeeded: true }));
-  surpriseBtn.addEventListener("click", () => {
-    if (!ensureAgreed()) return;
-    startFlow({ dailySeeded: false });
-  });
+  startBtn.addEventListener("click", startFlow);
 
   newBtn.addEventListener("click", () => {
-    currentDraw = makeDraw({ dailySeeded: false });
+    // New reading = just clear today's cache and regenerate
+    localStorage.removeItem(`tarot_daily_${todayKey()}`);
+    currentDraw = getOrCreateDailyDraw();
     setStage("draw");
     renderFaceDownCards();
   });
@@ -302,15 +278,9 @@
       copyBtn.textContent = "Copied ✨";
       setTimeout(() => (copyBtn.textContent = "Copy to share"), 1200);
     } catch {
-      alert("Copy failed (browser permission). You can select & copy manually.");
+      alert("Copy failed (browser permission).");
     }
   });
-
-  function stripHtml(html) {
-    const div = document.createElement("div");
-    div.innerHTML = html;
-    return (div.textContent || div.innerText || "").trim();
-  }
 
   // How modal
   howBtn.addEventListener("click", () => howDialog.showModal());
