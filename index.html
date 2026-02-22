@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Daily Light Tarot ✨</title>
+  <meta name="description" content="A happy & light daily tarot reading with a mystical shuffle and 3-card reveal." />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body class="stage-landing">
+  <div class="bg-stars" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">✨</span>
+      <span class="brand-name">Daily Light Tarot</span>
+    </div>
+
+    <button class="ghost-btn" id="howBtn" type="button" aria-haspopup="dialog">
+      How it works
+    </button>
+  </header>
+
+  <main class="wrap">
+    <!-- LANDING -->
+    <section class="panel hero" data-section="landing">
+      <div class="hero-copy">
+        <h1>We’ll reflect back what’s already within you.</h1>
+        <p class="sub">
+          A gentle, mystical nudge — happy, hopeful, and light. Draw 3 cards for
+          <strong>today’s</strong> message ✨
+        </p>
+
+        <div class="inputs">
+          <label class="field">
+            <span>Your name (optional)</span>
+            <input id="nameInput" type="text" placeholder="e.g., Nandini" autocomplete="given-name" />
+          </label>
+
+          <label class="check">
+            <input id="agreeInput" type="checkbox" />
+            <span>Okay — I understand this is for inspiration & entertainment.</span>
+          </label>
+        </div>
+
+        <div class="cta-row">
+          <button class="cta" id="startBtn" type="button">
+            Get my daily reading
+            <span class="cta-spark" aria-hidden="true">✦</span>
+          </button>
+
+          <button class="secondary" id="surpriseBtn" type="button" title="Not daily-seeded; just for fun">
+            Surprise me
+          </button>
+        </div>
+
+        <p class="tiny">
+          Tip: Come back tomorrow for a fresh reading 🌙
+        </p>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="orb"></div>
+        <div class="moon"></div>
+        <div class="sparkle s1"></div>
+        <div class="sparkle s2"></div>
+        <div class="sparkle s3"></div>
+      </div>
+    </section>
+
+    <!-- SHUFFLE -->
+    <section class="panel shuffle" data-section="shuffle" hidden>
+      <div class="shuffle-left">
+        <img class="reader" src="./assets/reader.svg" alt="" />
+      </div>
+
+      <div class="shuffle-right">
+        <h2>Shuffling your cards…</h2>
+        <p class="sub">Setting an intention for clarity, kindness, and a bright day.</p>
+
+        <div class="shuffle-stage" aria-hidden="true">
+          <div class="deck">
+            <div class="card card-a"></div>
+            <div class="card card-b"></div>
+            <div class="card card-c"></div>
+          </div>
+          <div class="glow"></div>
+        </div>
+
+        <div class="progress">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- DRAW -->
+    <section class="panel draw" data-section="draw" hidden>
+      <div class="draw-head">
+        <h2>Your 3 cards for today</h2>
+        <p class="sub">Tap each card to reveal its message ✨</p>
+      </div>
+
+      <div class="card-row" id="cardRow" role="list">
+        <!-- cards injected by JS -->
+      </div>
+
+      <div class="hint">
+        <span class="pill">1</span> Theme
+        <span class="pill">2</span> Gentle Advice
+        <span class="pill">3</span> Outcome
+      </div>
+    </section>
+
+    <!-- READINGS -->
+    <section class="panel reading" data-section="reading" hidden>
+      <div class="reading-grid">
+        <div class="reading-left">
+          <h2>Card messages</h2>
+          <div id="readingList" class="reading-list"></div>
+        </div>
+
+        <div class="reading-right">
+          <div class="summary-box" id="summaryBox" hidden>
+            <h2>Combined reading</h2>
+            <div id="summaryText" class="summary-text"></div>
+
+            <div class="summary-actions">
+              <button class="cta small" id="copyBtn" type="button">Copy to share</button>
+              <button class="secondary small" id="newBtn" type="button">New reading</button>
+            </div>
+
+            <p class="tiny">
+              Come back tomorrow for a fresh daily message 🌞
+            </p>
+          </div>
+
+          <div class="note">
+            <h3>Keep it light</h3>
+            <p class="tiny">
+              This is inspiration — not medical, legal, or financial advice.
+              Trust your intuition and take what resonates.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- HOW MODAL -->
+  <dialog class="modal" id="howDialog">
+    <div class="modal-inner">
+      <h2>How it works</h2>
+      <ol>
+        <li>Tap <strong>Get my daily reading</strong> (daily-seeded).</li>
+        <li>Watch the mystical shuffle ✨</li>
+        <li>Reveal 3 cards (Theme → Advice → Outcome).</li>
+        <li>Get individual + combined reading, then share if you like.</li>
+      </ol>
+      <div class="modal-actions">
+        <button class="cta small" id="closeHowBtn" type="button">Got it</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="./deck.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

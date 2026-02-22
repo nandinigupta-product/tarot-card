@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="900" viewBox="0 0 600 900">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b0b2e"/>
+      <stop offset="1" stop-color="#0b1635"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="35%" cy="25%" r="70%">
+      <stop offset="0" stop-color="#b7fff0" stop-opacity="0.25"/>
+      <stop offset="0.5" stop-color="#ffbee9" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#ffda9e" stop-opacity="0.0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="600" height="900" rx="36" fill="url(#bg)"/>
+  <rect width="600" height="900" rx="36" fill="url(#glow)"/>
+
+  <rect x="32" y="32" width="536" height="836" rx="28" fill="none" stroke="rgba(255,255,255,0.20)" stroke-width="2"/>
+  <rect x="54" y="54" width="492" height="792" rx="24" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+
+  <circle cx="300" cy="300" r="110" fill="rgba(255,255,255,0.10)"/>
+  <circle cx="270" cy="285" r="95" fill="rgba(255,255,255,0.08)"/>
+  <circle cx="332" cy="300" r="88" fill="url(#bg)"/>
+
+  <g fill="rgba(255,255,255,0.55)">
+    <circle cx="140" cy="180" r="2"/>
+    <circle cx="470" cy="190" r="2"/>
+    <circle cx="110" cy="380" r="2"/>
+    <circle cx="500" cy="420" r="2"/>
+    <circle cx="170" cy="610" r="2"/>
+    <circle cx="430" cy="640" r="2"/>
+    <circle cx="280" cy="520" r="2"/>
+    <circle cx="360" cy="560" r="2"/>
+  </g>
+
+  <g transform="translate(300 520)">
+    <circle r="58" fill="rgba(255,218,158,0.10)" stroke="rgba(255,218,158,0.35)" stroke-width="2"/>
+    <path d="M0-34 L8-8 L34 0 L8 8 L0 34 L-8 8 L-34 0 L-8-8 Z" fill="rgba(255,255,255,0.65)"/>
+    <circle r="6" fill="rgba(255,255,255,0.75)"/>
+  </g>
+
+  <text x="300" y="780" text-anchor="middle" font-family="Georgia, serif" font-size="30" fill="rgba(255,255,255,0.78)">
+    ✨
+  </text>
+</svg>
