@@ -37,32 +37,18 @@
             <span>Your name (optional)</span>
             <input id="nameInput" type="text" placeholder="e.g., Nandini" autocomplete="given-name" />
           </label>
-
-          <label class="check">
-            <input id="agreeInput" type="checkbox" />
-            <span>Okay — I understand this is for inspiration & entertainment.</span>
-          </label>
         </div>
 
-        <div class="cta-row">
-          <button class="cta" id="startBtn" type="button">
-            Get my daily reading
-            <span class="cta-spark" aria-hidden="true">✦</span>
-          </button>
-
-          <button class="secondary" id="surpriseBtn" type="button" title="Not daily-seeded; just for fun">
-            Surprise me
-          </button>
-        </div>
-
-        <p class="tiny">
-          Tip: Come back tomorrow for a fresh reading 🌙
-        </p>
+        <p class="tiny">Tip: Come back tomorrow for a fresh reading 🌙</p>
       </div>
 
       <div class="hero-art" aria-hidden="true">
-        <div class="orb"></div>
-        <div class="moon"></div>
+        <!-- Put your landing video at: assets/landing.mp4 -->
+        <video class="hero-video" autoplay muted loop playsinline preload="metadata">
+          <source src="./assets/landing.mp4" type="video/mp4" />
+        </video>
+
+        <div class="hero-overlay"></div>
         <div class="sparkle s1"></div>
         <div class="sparkle s2"></div>
         <div class="sparkle s3"></div>
@@ -88,7 +74,7 @@
           <div class="glow"></div>
         </div>
 
-        <div class="progress">
+        <div class="progress" aria-hidden="true">
           <span class="dot"></span><span class="dot"></span><span class="dot"></span>
         </div>
       </div>
@@ -101,9 +87,7 @@
         <p class="sub">Tap each card to reveal its message ✨</p>
       </div>
 
-      <div class="card-row" id="cardRow" role="list">
-        <!-- cards injected by JS -->
-      </div>
+      <div class="card-row" id="cardRow" role="list"></div>
 
       <div class="hint">
         <span class="pill">1</span> Theme
@@ -130,9 +114,7 @@
               <button class="secondary small" id="newBtn" type="button">New reading</button>
             </div>
 
-            <p class="tiny">
-              Come back tomorrow for a fresh daily message 🌞
-            </p>
+            <p class="tiny">Come back tomorrow for a fresh daily message 🌞</p>
           </div>
 
           <div class="note">
@@ -147,12 +129,37 @@
     </section>
   </main>
 
+  <!-- Sticky CTA (bottom) -->
+  <div class="sticky-cta" id="stickyCta">
+    <div class="sticky-inner">
+      <div class="sticky-text">
+        <div class="sticky-title">Ready for your daily message?</div>
+        <div class="sticky-sub">3 cards • gentle, happy & light ✨</div>
+      </div>
+      <button class="cta" id="startBtn" type="button">
+        Get my daily reading <span class="cta-spark" aria-hidden="true">✦</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 2s overlay after 3 cards -->
+  <div class="ready-toast" id="readyToast" hidden>
+    <div class="ready-card">
+      <div class="ready-spark" aria-hidden="true">✨</div>
+      <div>
+        <div class="ready-title">Your reading is ready</div>
+        <div class="ready-sub">Opening your message…</div>
+      </div>
+      <div class="ready-spinner" aria-hidden="true"></div>
+    </div>
+  </div>
+
   <!-- HOW MODAL -->
   <dialog class="modal" id="howDialog">
     <div class="modal-inner">
       <h2>How it works</h2>
       <ol>
-        <li>Tap <strong>Get my daily reading</strong> (daily-seeded).</li>
+        <li>Tap <strong>Get my daily reading</strong>.</li>
         <li>Watch the mystical shuffle ✨</li>
         <li>Reveal 3 cards (Theme → Advice → Outcome).</li>
         <li>Get individual + combined reading, then share if you like.</li>
